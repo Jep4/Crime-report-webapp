@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\app",
+    "\\src\\app\\data-table",
+    "\\src\\app\\map-display",
+    "\\src\\assets"
+  ],
+  "SelectedNode": "\\src\\app\\data-table\\data-table.component.html",
+  "PreviewInSolutionExplorer": false
+}

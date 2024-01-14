@@ -1,0 +1,150 @@
+<main>
+  <table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th scope="col" (click)="toggleSort('Location')" class="sortable">
+          <button class="btn btn-link btn-sort">
+            Location
+            <span class="sort-icon" [ngClass]="{'asc': sortColumn === 'Location' && sortAscending, 'desc': sortColumn === 'Location' && !sortAscending}"></span>
+          </button>
+        </th>
+        <th scope="col" (click)="toggleSort('Reporter')" class="sortable">
+          <button class="btn btn-link btn-sort">
+            Reporter
+            <span class="sort-icon" [ngClass]="{'asc': sortColumn === 'Reporter' && sortAscending, 'desc': sortColumn === 'Reporter' && !sortAscending}"></span>
+          </button>
+        </th>
+        <th scope="col" (click)="toggleSort('Time Reported')" class="sortable">
+          <button class="btn btn-link btn-sort">
+            Time Reported
+            <span class="sort-icon" [ngClass]="{'asc': sortColumn === 'Time Reported' && sortAscending, 'desc': sortColumn === 'Time Reported' && !sortAscending}"></span>
+          </button>
+        </th>
+        <th scope="col" (click)="toggleSort('Status')" class="sortable">
+          <button class="btn btn-link btn-sort">
+            Status
+            <span class="sort-icon" [ngClass]="{'asc': sortColumn === 'Status' && sortAscending, 'desc': sortColumn === 'Status' && !sortAscending}"></span>
+          </button>
+        </th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let report of reports">
+        <td>{{ report.location }}</td>
+        <td>{{ report.reporter }}</td>
+        <td>{{ report.timeDate | date: 'medium' }}</td>
+        <td>{{ report.status }}</td>
+        <td>
+          <button class="btn btn-info" (click)="showMoreInfo(report)">
+            {{ selectedReport === report ? 'Close' : 'More Info' }}
+          </button>
+          <button class="btn btn-warning ml-2" (click)="changeStatus(report)">
+            Change Status
+          </button>
+          <!-- Delete Button -->
+          <button class="btn btn-danger ml-2" (click)="deleteReport(report.id)">
+            Delete
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <!-- Add Report Button -->
+  <button class="btn btn-primary mb-3" (click)="showAddReportForm = !showAddReportForm">
+    {{ showAddReportForm ? 'Cancel' : 'Add Report' }}
+  </button>
+
+  <form #reportForm="ngForm">
+    <div *ngIf="showAddReportForm" class="mb-3">
+      <!-- Reporter Field with Required Validation -->
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Reporter" [(ngModel)]="newReport.reporter" name="reporter" required>
+      </div>
+
+      <!-- Reporter Phone Field with Required Validation -->
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Reporter Phone" [(ngModel)]="newReport.reporterPhone" name="reporterPhone" required>
+      </div>
+
+      <!-- Troublemaker Name Field with Required Validation -->
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Troublemaker Name" [(ngModel)]="newReport.troublemakerName" name="troublemakerName" required>
+      </div>
+
+      <!-- Location Option Selection -->
+      <div class="form-group">
+        <select class="form-control" [(ngModel)]="locationOption" name="locationOption" required>
+          <option value="existing">Select Saved Location</option>
+          <option value="new">Create New Location</option>
+        </select>
+      </div>
+
+      <!-- New Location Name Input -->
+      <div *ngIf="locationOption === 'new'" class="form-group">
+        <input type="text" class="form-control" placeholder="Location Name" [(ngModel)]="newLocationName" name="newLocationName" required>
+        <input type="number" class="form-control" placeholder="Latitude" [(ngModel)]="newLocationLat" name="newLocationLat" required>
+        <input type="number" class="form-control" placeholder="Longitude" [(ngModel)]="newLocationLng" name="newLocationLng" required>
+      </div>
+
+      <!-- Existing Location Dropdown -->
+
+      <div *ngIf="locationOption === 'existing'" class="form-group">
+        <select class="form-control" [(ngModel)]="selectedLocation" name="selectedLocation" (change)="loadLocationData()">
+          <option value="">Select a saved location</option>
+          <option *ngFor="let location of savedLocations" [value]="location">
+            {{ location }} <!-- Display the "key" property as the option label -->
+          </option>
+        </select>
+      </div>
+      <!-- Picture URL Field -->
+      <div>
+        <textarea class="form-control" placeholder="Picture path" [(ngModel)]="newReport.pictureUrl" name="pictureURL"></textarea>
+      </div>
+
+
+      <!-- Extra Info Field -->
+      <div class="form-group">
+        <textarea class="form-control" placeholder="Extra Info" [(ngModel)]="newReport.extraInfo" name="extraInfo"></textarea>
+      </div>
+
+      <!-- Status Selection -->
+      <div class="form-group">
+        <select class="form-control" [(ngModel)]="newReport.status" name="status" required>
+          <option value="Open">Open</option>
+          <option value="Closed">Closed</option>
+        </select>
+      </div>
+
+      <!-- Submit Button - Disabled if form is invalid -->
+      <button class="btn btn-success" (click)="addReport()" [disabled]="!reportForm.valid">Submit Report</button>
+    </div>
+  </form>
+</main>
+<!-- Detailed Information Section -->
+<div *ngIf="selectedReport" class="mt-3">
+
+  <h3 class="mb-4">Detailed Information</h3>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <img *ngIf="selectedReport?.pictureUrl" [src]="selectedReport.pictureUrl" alt="Report Image" class="img-fluid">
+        </div>
+        <div class="col-md-6">
+          <p class="card-text"><strong>Reporter:</strong> {{ selectedReport.reporter }}</p>
+          <p class="card-text"><strong>Reporter Phone:</strong> {{ selectedReport.reporterPhone }}</p>
+          <p class="card-text"><strong>Troublemaker Name:</strong> {{ selectedReport.troublemakerName }}</p>
+          <p class="card-text"><strong>Location:</strong> {{ selectedReport.location }}</p>
+          <p class="card-text"><strong>Latitude:</strong> {{ selectedReport.latitude }}</p>
+          <p class="card-text"><strong>Longitude:</strong> {{ selectedReport.longitude }}</p>
+          <p class="card-text"><strong>Extra Info:</strong> {{ selectedReport.extraInfo }}</p>
+          <p class="card-text"><strong>Time Reported:</strong> {{ selectedReport.timeDate | date: 'medium' }}</p>
+          <p class="card-text"><strong>Status:</strong> {{ selectedReport.status }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

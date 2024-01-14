@@ -1,0 +1,36 @@
+.ng-invalid:not(form) {
+  border-left: 5px solid red;
+}
+
+
+/* Custom styles for the sort buttons */
+.sortable {
+  cursor: pointer;
+}
+
+.btn-sort {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background-color: transparent;
+  border: none;
+  font-weight: bold;
+  text-align: left;
+}
+
+.sort-icon {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-left: 5px;
+  vertical-align: middle;
+}
+
+.asc::before {
+  content: '\25B2';
+}
+
+.desc::before {
+  content: '\25BC'; 
+}
